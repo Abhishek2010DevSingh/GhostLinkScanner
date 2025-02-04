@@ -1,8 +1,11 @@
+use ghost_link_scanner::scan::scan_base_url;
+use url::Url;
+
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::TRACE)
+        .with_max_level(tracing::Level::INFO)
         .init();
 
-    tracing::trace!("Hello, Moto");
+    scan_base_url(&Url::parse("https://github.com/Abhishek2010DevSingh")?).await
 }
