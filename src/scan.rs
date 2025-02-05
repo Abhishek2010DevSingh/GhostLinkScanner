@@ -3,8 +3,8 @@ use prettytable::{row, Table};
 use reqwest::Client;
 use scraper::{Html, Selector};
 use std::sync::LazyLock;
-use std::sync::Mutex;
 use std::time::Duration;
+use tokio::sync::Mutex;
 use tokio::task::JoinSet;
 use tracing::{error, info, warn};
 use url::Url;
@@ -41,7 +41,7 @@ pub async fn scan_base_url(base_url: &Url) -> Result<()> {
         }
     }
 
-    let dead_links = DEAD_LINKS.lock().unwrap();
+    let dead_links = DEAD_LINKS.lock().await;
     if !dead_links.is_empty() {
         let mut table = Table::new();
         table.add_row(row!["#", "URL", "Status"]);
@@ -66,7 +66,7 @@ async fn scan_url(client: Client, url: &Url) {
         Ok(res) => {
             let status = format!("Dead (Status: {})", res.status());
             warn!("❌ {}", status);
-            DEAD_LINKS.lock().unwrap().push((url.clone(), status));
+            DEAD_LINKS.lock().await.push((url.clone(), status));
         }
         Err(e) => {
             error!("Request Failed (Error: {})", e);
