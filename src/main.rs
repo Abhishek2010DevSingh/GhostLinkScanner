@@ -22,8 +22,5 @@ async fn main() -> anyhow::Result<()> {
 
     info!("Starting scan for URL: {}", args.url);
 
-    scan_base_url(&args.url).await.map_err(|e| {
-        tracing::error!("Scan failed: {:?}", e);
-        e
-    })
+    scan_base_url(&args.url).await
 }
